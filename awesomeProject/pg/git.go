@@ -6,8 +6,7 @@ import (
 )
 
 func Git() {
-	mass := make([]int, 10)
-	for i := range mass {
+	for i := range 5 {
 		fmt.Println(i)
 	}
 	os.Exit(0)
