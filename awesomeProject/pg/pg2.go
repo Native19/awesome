@@ -72,6 +72,8 @@ func Pg2() {
 
 	//fmt.Println(dropWeather(dbpool))
 
+	//changes
+	//changes 2
 }
 
 func insertWeather(pool *pgxpool.Pool,
