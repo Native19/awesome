@@ -2,7 +2,7 @@ package go3
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 )
@@ -15,7 +15,7 @@ func Ht() {
 		log.Fatal(err)
 	}
 
-	buf, err := ioutil.ReadAll(resp.Body)
+	buf, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}

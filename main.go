@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"fmt"
 	"time"
 
 	"awesome/awesomeProject/go1"
 	"awesome/awesomeProject/go2"
 	"awesome/awesomeProject/go3"
-	"awesome/awesomeProject/pg"
+	"awesome/awesomeProject/httpPractice"
+	"awesome/awesomeProject/testMiddleware"
 )
 
 var period = flag.Duration("period", 1*time.Second, "sleep period")
@@ -19,14 +22,31 @@ func init() {
 }
 
 func main() {
+	testMiddleware.TestMiddleware()
+}
 
-	pg.Pg2()
+func server() {
+	t1 := time.Now()
+	fmt.Println("Server starting")
+	serv, erCh := httpPractice.Serv()
+	go func(erCh chan error) {
+		for err := range erCh {
+			fmt.Println(err.Error())
+		}
+	}(erCh)
 
-	//????????????
-	// !!!!!!!!!!!!!!!!
-	// ////////////////////
-	// dsfsdfds
+	go func() {
+		if err := serv.ListenAndServe(); err != nil {
+			return
+		}
+	}()
+	fmt.Println("Server started")
 
+	time.Sleep(10 * time.Second)
+	stopServ, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	fmt.Printf("время работы сервера: %v\n", time.Since(t1).String())
+	_ = serv.Shutdown(stopServ)
+	fmt.Printf("время работы сервера и выключения: %v\n", time.Since(t1).String())
 }
 
 func go3Main() {
