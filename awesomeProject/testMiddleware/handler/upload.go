@@ -38,7 +38,3 @@ func (u *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("upload успешно присвоил true и 502")
 	}
 }
-
-func getLog(log interface{}) error {
-
-}
