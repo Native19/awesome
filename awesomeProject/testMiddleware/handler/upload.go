@@ -3,7 +3,6 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"awesome/awesomeProject/testMiddleware/middleware"
 )
@@ -18,21 +17,9 @@ func (u *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("upload")
 
 	var log middleware.LogWriter
-
-	if log != nil {
-		log.SetBool(true)
-		log.SetStatus(http.StatusBadGateway)
-		fmt.Println("upload успешно присвоил true и 502")
-	}
-}
-
-func getLog(log interface{}, w http.ResponseWriter) error {
 	for {
 
-		fmt.Println(reflect.TypeOf(log))
-		typeL := reflect.TypeOf(log)
-
-		try, ok := w.(typeL)
+		try, ok := w.(middleware.LogWriter)
 		if ok {
 			log = try
 			break
@@ -44,4 +31,14 @@ func getLog(log interface{}, w http.ResponseWriter) error {
 			break
 		}
 	}
+
+	if log != nil {
+		log.SetBool(true)
+		log.SetStatus(http.StatusBadGateway)
+		fmt.Println("upload успешно присвоил true и 502")
+	}
+}
+
+func getLog(log interface{}) error {
+
 }
