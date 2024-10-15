@@ -4,6 +4,9 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"awesome/awesomeProject/go1"
@@ -23,17 +26,19 @@ func init() {
 
 func main() {
 	testMiddleware.TestMiddleware()
+	//server()
+	//httpPractice.Ht()
 }
 
 func server() {
 	t1 := time.Now()
 	fmt.Println("Server starting")
-	serv, erCh := httpPractice.Serv()
+	serv, errCh := httpPractice.Serv2()
 	go func(erCh chan error) {
 		for err := range erCh {
 			fmt.Println(err.Error())
 		}
-	}(erCh)
+	}(errCh)
 
 	go func() {
 		if err := serv.ListenAndServe(); err != nil {
@@ -42,8 +47,17 @@ func server() {
 	}()
 	fmt.Println("Server started")
 
-	time.Sleep(10 * time.Second)
-	stopServ, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	interrupt := make(chan os.Signal, 1)
+
+	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
+	select {
+	case <-interrupt:
+		fmt.Println("interrupt")
+	}
+
+	stopServ, closeCtx := context.WithTimeout(context.Background(), 5*time.Second)
+	defer closeCtx()
+
 	fmt.Printf("время работы сервера: %v\n", time.Since(t1).String())
 	_ = serv.Shutdown(stopServ)
 	fmt.Printf("время работы сервера и выключения: %v\n", time.Since(t1).String())

@@ -26,6 +26,6 @@ func (cr *customRecorder) WriteHeader(statusCode int) {
 func (cr *customRecorder) SetError(err error) {
 	cr.Err = err
 }
-func (cr *customRecorder) SetBytes(msg string) {
+func (cr *customRecorder) SetMsg(msg string) {
 	cr.Msg = msg
 }

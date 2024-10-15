@@ -17,33 +17,17 @@ func NewUploadHandler() *UploadHandler {
 func (u *UploadHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("upload")
 
-	log, err := getWriter[middleware.LogWriter](w)
-	if err != nil {
-		return
-	}
-
-	if log != nil {
+	log, err := middleware.GetWriter[middleware.LogWriter](w)
+	if err == nil {
 		log.SetBool(true)
 		log.SetStatus(http.StatusBadGateway)
 		fmt.Println("upload успешно присвоил true и 502")
 	}
-}
 
-func getWriter[T any](w http.ResponseWriter) (writer T, err error) {
-	for {
-		try, ok := w.(T)
-		if ok {
-			return try, nil
-		}
-		unW, ok := w.(interface {
-			Unwrap() http.ResponseWriter
-		})
-		if ok {
-			w = unW.Unwrap()
-		} else {
-			break
-		}
+	observer, err := middleware.GetWriter[middleware.CustomLog](w)
+	if err == nil {
+		observer.SetError(errors.New("какая-то ошибка"))
+		observer.SetMsg("данные обсервера")
+		fmt.Println("upload успешно присвоил ошибку и msg")
 	}
-	var t T
-	return t, errors.New("не удалось извлечь тип")
 }

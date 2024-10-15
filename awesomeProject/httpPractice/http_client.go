@@ -1,4 +1,4 @@
-package go3
+package httpPractice
 
 import (
 	"fmt"
@@ -9,6 +9,8 @@ import (
 
 func Ht() {
 	client := http.Client{}
+	/*	req := http.Request{}
+		res, err := client.Do(&req)*/
 
 	resp, err := client.Get("https://golangforall.com/en/")
 	if err != nil {

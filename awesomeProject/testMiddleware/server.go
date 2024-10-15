@@ -10,7 +10,7 @@ import (
 func TestMiddleware() {
 	t1 := time.Now()
 	fmt.Println("Server starting")
-	serv, erCh := httpPractice.Serv()
+	serv, erCh := httpPractice.Serv1()
 	serv.Handler = newRouter()
 	go func(erCh chan error) {
 		for err := range erCh {
